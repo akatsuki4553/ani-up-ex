@@ -1,0 +1,27 @@
+name: build
+
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9998
+
+    steps:
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Setup FFmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v1.1.0
+      id: setup-ffmpeg
+    - name: checkout repo content
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ secrets.SOURCE_REPO }}
+        token: ${{ secrets.PAT }}
+    - name: start python script
+      env:
+        itemsFile: ${{ secrets.ITEMSFILE }}
+      run: |
+        pip install -r requirements.txt
+        python main.py >log
